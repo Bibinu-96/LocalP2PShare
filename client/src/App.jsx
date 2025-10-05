@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 
 const CHUNK_SIZE = 16384;
-const SIGNALING_SERVER = 'http://localhost:3001';
+// point to your signaling server here
+const SIGNALING_SERVER = 'http://172.20.10.6:3001';
 
 export default function App() {
   const [myId, setMyId] = useState('');
