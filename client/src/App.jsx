@@ -188,7 +188,7 @@ export default function App() {
   };
 
   const receiveFile = () => {
-    const blob = new Blob(receivedBuffersRef.current, { type: fileMetadataRef.current.type });
+    const blob = new Blob(receivedBuffersRef.current, { type: fileMetadataRef.current.mimeType });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement('a');
@@ -227,7 +227,7 @@ export default function App() {
       type: 'file-metadata',
       name: file.name,
       size: file.size,
-      type: file.type
+      mimeType: file.type
     };
     dataChannelRef.current.send(JSON.stringify(metadata));
 
