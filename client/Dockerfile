@@ -3,10 +3,8 @@ FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
 # Install dependencies
+COPY package*.json ./
 RUN npm ci
 
 # Copy source code
@@ -16,16 +14,18 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM node:18-alpine
 
-# Copy built assets from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Copy custom nginx config (optional)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Install serve to host the static build
+RUN npm install -g serve
 
-# Expose port 80
-EXPOSE 80
+# Copy build output
+COPY --from=build /app/dist ./dist
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Expose port 8080
+EXPOSE 8080
+
+# Start the frontend on all interfaces
+CMD ["serve", "-s", "dist", "-l", "8080", "--single"]
