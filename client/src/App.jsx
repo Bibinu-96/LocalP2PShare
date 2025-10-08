@@ -3,7 +3,9 @@ import io from 'socket.io-client';
 
 const CHUNK_SIZE = 16384;
 // point to your signaling server here
-const SIGNALING_SERVER = 'http://172.20.10.6:3001';
+const SIGNALING_SERVER = 'http://localhost:8081';
+
+//const SIGNALING_SERVER=`http://your-public-ip/signal`
 
 export default function App() {
   const [myId, setMyId] = useState('');
