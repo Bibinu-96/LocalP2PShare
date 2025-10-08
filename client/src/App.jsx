@@ -5,7 +5,7 @@ const CHUNK_SIZE = 16384;
 // point to your signaling server here
 //const SIGNALING_SERVER = 'http://localhost:8081';
 
-const SIGNALING_SERVER=`https://vipinkprojects.com/signal`
+const SIGNALING_SERVER = 'wss://vipinkprojects.com';
 
 export default function App() {
   const [myId, setMyId] = useState('');
@@ -25,7 +25,13 @@ export default function App() {
   const fileMetadataRef = useRef(null);
 
   useEffect(() => {
-    socketRef.current = io(SIGNALING_SERVER);
+    // ? Correct initialization with path matching Nginx
+    socketRef.current = io(SIGNALING_SERVER, {
+      path: '/socket.io',          // must match Nginx location
+      transports: ['websocket', 'polling'],  // fallback if WebSocket fails
+      secure: true  ,
+      withCredentials: false       // ensures wss:// used with Cloudflare HTTPS
+    });
 
     socketRef.current.on('connect', () => {
       setMyId(socketRef.current.id);
@@ -295,8 +301,8 @@ export default function App() {
             <div
               key={s.id}
               className={`p-3 rounded-lg text-sm ${s.type === 'success' ? 'bg-green-100 text-green-800' :
-                  s.type === 'error' ? 'bg-red-100 text-red-800' :
-                    'bg-blue-100 text-blue-800'
+                s.type === 'error' ? 'bg-red-100 text-red-800' :
+                  'bg-blue-100 text-blue-800'
                 }`}
             >
               {s.message}
@@ -316,8 +322,8 @@ export default function App() {
                 <div
                   key={peerId}
                   className={`flex items-center justify-between p-4 rounded-lg border-2 ${connectedPeer === peerId
-                      ? 'bg-green-50 border-green-500'
-                      : 'bg-gray-50 border-transparent'
+                    ? 'bg-green-50 border-green-500'
+                    : 'bg-gray-50 border-transparent'
                     }`}
                 >
                   <span className="font-mono text-sm text-gray-600">{peerId}</span>
